@@ -1,3 +1,8 @@
+# ignore IntelliJ stuff
+*.iml
+.idea/
+/out/
+
 # ignore Eclipse stuff
 .project
 .settings
