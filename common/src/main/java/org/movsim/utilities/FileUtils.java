@@ -55,8 +55,8 @@ public final class FileUtils {
 
     /**
      * Searches a file first in given location {@code filename} and second in path of the inputfile.
-     * 
-     * @throws IllegalArgumentException
+     *
+     * @throws IllegalArgumentException If input file cannot be found
      */
     public static File lookupFilename(String filename) throws IllegalArgumentException {
         File file = new File(filename);
@@ -71,16 +71,14 @@ public final class FileUtils {
 
     /**
      * Gets the writer.
-     * 
-     * @param filename
-     *            the filename
+     *
+     * @param filename the filename
      * @return the writer
      */
     public static PrintWriter getWriter(String filename) {
         try {
             LOG.info("open file {} for writing", filename);
-            final PrintWriter fstr = new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
-            return fstr;
+            return new PrintWriter(new BufferedWriter(new FileWriter(filename, false)));
         } catch (final java.io.IOException e) {
             LOG.error("cannot open file {} for writing", filename);
         }
@@ -89,16 +87,14 @@ public final class FileUtils {
 
     /**
      * Gets the reader.
-     * 
-     * @param filename
-     *            the filename
+     *
+     * @param filename the filename
      * @return the reader
      */
     public static BufferedReader getReader(String filename) {
         try {
             LOG.debug("open file {} for reading", filename);
-            final BufferedReader reader = new BufferedReader(new FileReader(filename));
-            return reader;
+            return new BufferedReader(new FileReader(filename));
         } catch (final Exception e) {
             LOG.error("cannot open file {} for reading", filename);
         }
@@ -107,7 +103,7 @@ public final class FileUtils {
 
     /**
      * Current directory.
-     * 
+     *
      * @return the string
      */
     public static String currentDirectory() {
@@ -158,8 +154,9 @@ public final class FileUtils {
     private static boolean deleteDir(File dir) {
         if (dir.isDirectory()) {
             final String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                final boolean success = deleteDir(new File(dir, children[i]));
+            assert children != null;
+            for (String child : children) {
+                final boolean success = deleteDir(new File(dir, child));
                 if (!success) {
                     return false;
                 }
@@ -210,16 +207,17 @@ public final class FileUtils {
 
     public static void deleteFileList(String path, String regex) {
         final String[] files = getFileList(path + File.separator, regex);
-        for (int i = 0; i < files.length; i++) {
+        for (String file : files) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("filename to delete = " + files[i]);
+                LOG.debug("filename to delete = " + file);
             }
-            deleteFile(files[i], "deleteFileList with regexExpression = " + regex);
+            deleteFile(file, "deleteFileList with regexExpression = " + regex);
         }
     }
 
     public static void writeStreamToFile(String filename, InputStream is) {
         final PrintWriter writer = getWriter(filename);
+        assert writer != null;
         try {
             String line;
             final BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -241,14 +239,14 @@ public final class FileUtils {
 
             final PrintWriter writer = FileUtils.getWriter(filename);
             final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream));
+            assert writer != null;
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 writer.println(line);
             }
 
             bufferedReader.close();
             writer.close();
-        } catch (final FileNotFoundException e) {
-            e.printStackTrace();
+
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -303,8 +301,7 @@ public final class FileUtils {
     }
 
     public static String getProjectName(File file) {
-        String name = null;
-        name = file.getName().substring(0, file.getName().indexOf(".xml"));
-        return name;
+        // Remove the file extension .xprj
+        return file.getName().substring(0, file.getName().indexOf(".xprj"));
     }
 }

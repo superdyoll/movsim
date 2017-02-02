@@ -49,15 +49,30 @@ import org.movsim.viewer.graphics.TrafficCanvas;
 import org.movsim.viewer.util.SwingHelper;
 import org.xml.sax.SAXException;
 
-@SuppressWarnings({ "synthetic-access", "serial" })
+@SuppressWarnings({"synthetic-access", "serial"})
 public class AppMenu extends MovSimMenuBase {
     private static final long serialVersionUID = -1741830983719200790L;
     private final Simulator simulator;
     private final AppFrame frame;
     private final Properties properties;
 
+    /**
+     * Folder where the building blocks simulations are stored.
+     */
+    private static final String BUILDING_BLOCKS_FOLDER = "sim/buildingBlocks/";
+
+    /**
+     * Folder where the games simulations are stored.
+     */
+    private static final String GAMES_FOLDER = "sim/games/";
+
+    /**
+     * Folder where the example simulations are stored.
+     */
+    private static final String EXAMPLE_FOLDER = "sim/examples/";
+
     public AppMenu(AppFrame mainFrame, Simulator simulator, CanvasPanel canvasPanel,
-            TrafficCanvas trafficCanvas, ResourceBundle resourceBundle, Properties properties) {
+                   TrafficCanvas trafficCanvas, ResourceBundle resourceBundle, Properties properties) {
         super(canvasPanel, trafficCanvas, resourceBundle);
         this.frame = mainFrame;
         this.simulator = simulator;
@@ -83,11 +98,11 @@ public class AppMenu extends MovSimMenuBase {
         menuFile.add(new JMenuItem(new OpenAction(resourceString("FileMenuOpen"))));
 
         menuFile.add(new JMenuItem(new AbstractAction(resourceString("FileMenuPreferences")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handlePreferences(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handlePreferences(actionEvent);
+            }
+        })).setEnabled(false);
 
         menuFile.addSeparator();
 
@@ -105,35 +120,35 @@ public class AppMenu extends MovSimMenuBase {
         final JMenu outputMenu = new JMenu(resourceString("OutputMenu"));
 
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("TravelTime")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleTravelTimeDiagram(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleTravelTimeDiagram(actionEvent);
+            }
+        })).setEnabled(false);
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("Detectors")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleDetectorsDiagram(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleDetectorsDiagram(actionEvent);
+            }
+        })).setEnabled(false);
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("FloatingCars")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleFloatingCarsDiagram(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleFloatingCarsDiagram(actionEvent);
+            }
+        })).setEnabled(false);
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("SpatioTemporal")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleSpatioTemporalDiagram(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleSpatioTemporalDiagram(actionEvent);
+            }
+        })).setEnabled(false);
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("Consumption")) {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleFuelConsumptionDiagram(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleFuelConsumptionDiagram(actionEvent);
+            }
+        })).setEnabled(false);
 
         return outputMenu;
     }
@@ -144,7 +159,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("OnRamp")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("onramp", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("onramp", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -152,7 +167,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("OffRamp")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("offramp", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("offramp", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -160,7 +175,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("FlowConservingBottleNeck")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("flow_conserving_bottleneck", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("flow_conserving_bottleneck", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -168,7 +183,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("SpeedLimitOUTDATED")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("speedlimit", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("speedlimit", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -176,7 +191,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("TrafficLight")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("trafficlight", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("trafficlight", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -184,7 +199,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("LaneClosing")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("laneclosure", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("laneclosure", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -192,7 +207,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("CloverLeaf")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("cloverleaf", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("cloverleaf", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -214,7 +229,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("RingRoad")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("ringroad_1lane", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("ringroad_1lane", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -222,7 +237,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("RingRoad2Lanes")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("ringroad_2lanes", "../sim/buildingBlocks/");
+                trafficCanvas.setupTrafficScenario("ringroad_2lanes", BUILDING_BLOCKS_FOLDER);
                 uiDefaultReset();
             }
         }));
@@ -232,7 +247,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("GameRampMetering")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("ramp_metering", "../sim/games/");
+                trafficCanvas.setupTrafficScenario("ramp_metering", GAMES_FOLDER);
                 trafficCanvas.setVehicleColorMode(TrafficCanvas.VehicleColorMode.EXIT_COLOR);
                 uiDefaultReset();
             }
@@ -241,7 +256,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("GameRouting")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("routing", "../sim/games/");
+                trafficCanvas.setupTrafficScenario("routing", GAMES_FOLDER);
                 trafficCanvas.setVehicleColorMode(TrafficCanvas.VehicleColorMode.EXIT_COLOR);
                 uiDefaultReset();
             }
@@ -252,7 +267,7 @@ public class AppMenu extends MovSimMenuBase {
         scenarioMenu.add(new JMenuItem(new AbstractAction(resourceString("Vasaloppet")) {
             @Override
             public void actionPerformed(ActionEvent e) {
-                trafficCanvas.setupTrafficScenario("vasa_CCS", "../sim/examples/");
+                trafficCanvas.setupTrafficScenario("vasa_CCS", EXAMPLE_FOLDER);
                 uiDefaultReset();
                 CCS.setWave(Waves.FOURWAVES);
             }
@@ -277,61 +292,61 @@ public class AppMenu extends MovSimMenuBase {
         viewMenu.addSeparator();
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("LogOutput")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleLogOutput(actionEvent);
-                    }
-                }));
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleLogOutput(actionEvent);
+            }
+        }));
 
         viewMenu.addSeparator();
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawRoadIds")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleDrawRoadIds(actionEvent);
-                    }
-                })).setSelected(trafficCanvas.isDrawRoadId());
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleDrawRoadIds(actionEvent);
+            }
+        })).setSelected(trafficCanvas.isDrawRoadId());
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawSources")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleDrawSources(actionEvent);
-                    }
-                })).setSelected(trafficCanvas.isDrawSources());
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleDrawSources(actionEvent);
+            }
+        })).setSelected(trafficCanvas.isDrawSources());
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawSinks")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleDrawSinks(actionEvent);
-                    }
-                })).setSelected(trafficCanvas.isDrawSinks());
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleDrawSinks(actionEvent);
+            }
+        })).setSelected(trafficCanvas.isDrawSinks());
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawSpeedLimits")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleDrawSpeedLimits(actionEvent);
-                    }
-                })).setSelected(trafficCanvas.isDrawSpeedLimits());
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleDrawSpeedLimits(actionEvent);
+            }
+        })).setSelected(trafficCanvas.isDrawSpeedLimits());
 
-        viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawFlowConservingBootleNecks")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                    }
-                })).setEnabled(false);
+        viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawFlowConservingBottleNecks")) {//$NON-NLS-1$
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+            }
+        })).setEnabled(false);
 
         viewMenu.addSeparator();
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawRoutesTravelTime")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+            }
+        })).setEnabled(false);
 
         viewMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("DrawRoutesSpatioTemporal")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+            }
+        })).setEnabled(false);
 
         return viewMenu;
     }
@@ -339,11 +354,11 @@ public class AppMenu extends MovSimMenuBase {
     private JMenu modelMenu() {
         final JMenu modelMenu = new JMenu(resourceString("ModelMenu"));
         modelMenu.add(new JMenuItem(new AbstractAction(resourceString("ModelMenuViewParams")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        SwingHelper.notImplemented(canvasPanel);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                SwingHelper.notImplemented(canvasPanel);
+            }
+        })).setEnabled(false);
         return modelMenu;
     }
 
@@ -376,7 +391,7 @@ public class AppMenu extends MovSimMenuBase {
             String cwd = ""; //$NON-NLS-1$
             try {
                 cwd = new java.io.File(".").getCanonicalPath(); //$NON-NLS-1$
-            } catch (final java.io.IOException e) {
+            } catch (final java.io.IOException ignored) {
             }
             // System.out.println("cwd = " + cwd); //$NON-NLS-1$
             final File path = new File(cwd);
@@ -384,12 +399,12 @@ public class AppMenu extends MovSimMenuBase {
             fileChooser.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File file) {
-                    return file.isDirectory() || file.getName().endsWith(".xml"); //$NON-NLS-1$
+                    return file.isDirectory() || file.getName().endsWith(".xprj"); //$NON-NLS-1$
                 }
 
                 @Override
                 public String getDescription() {
-                    return "XML files";
+                    return "XPRJ files";
                 }
             });
             fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
@@ -401,7 +416,7 @@ public class AppMenu extends MovSimMenuBase {
                     try {
                         simulator.loadScenarioFromXml(FileUtils.getProjectName(file),
                                 FileUtils.getCanonicalPathWithoutFilename(file));
-                    } catch (JAXBException  | SAXException e){
+                    } catch (JAXBException | SAXException e) {
                         throw new IllegalArgumentException(e.toString());
                     }
                     uiDefaultReset();

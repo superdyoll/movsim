@@ -11,26 +11,12 @@
  */
 package org.movsim.simulator;
 
-import java.io.File;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.parsers.ParserConfigurationException;
-
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
-import org.movsim.autogen.CrossSection;
-import org.movsim.autogen.Movsim;
-import org.movsim.autogen.Road;
-import org.movsim.autogen.Simulation;
-import org.movsim.autogen.TrafficSinkType;
-import org.movsim.autogen.TrafficSourceType;
+import org.movsim.autogen.*;
 import org.movsim.input.ProjectMetaData;
 import org.movsim.input.network.OpenDriveReader;
 import org.movsim.output.FileTrafficSinkData;
@@ -43,21 +29,14 @@ import org.movsim.simulator.observer.ServiceProviders;
 import org.movsim.simulator.roadnetwork.RoadNetwork;
 import org.movsim.simulator.roadnetwork.RoadSegment;
 import org.movsim.simulator.roadnetwork.RoadTypeSpeeds;
-import org.movsim.simulator.roadnetwork.boundaries.AbstractTrafficSource;
-import org.movsim.simulator.roadnetwork.boundaries.InflowTimeSeries;
-import org.movsim.simulator.roadnetwork.boundaries.MicroscopicBoundaryConditions;
-import org.movsim.simulator.roadnetwork.boundaries.MicroscopicBoundaryInputData;
+import org.movsim.simulator.roadnetwork.boundaries.*;
 import org.movsim.simulator.roadnetwork.boundaries.SimpleRamp;
-import org.movsim.simulator.roadnetwork.boundaries.TrafficSourceMacro;
-import org.movsim.simulator.roadnetwork.boundaries.TrafficSourceMicro;
-import org.movsim.simulator.roadnetwork.controller.FlowConservingBottleneck;
-import org.movsim.simulator.roadnetwork.controller.LoopDetector;
-import org.movsim.simulator.roadnetwork.controller.RoadObject;
-import org.movsim.simulator.roadnetwork.controller.TrafficLight;
+import org.movsim.simulator.roadnetwork.controller.*;
 import org.movsim.simulator.roadnetwork.controller.TrafficLights;
 import org.movsim.simulator.roadnetwork.controller.VariableMessageSignDiversion;
 import org.movsim.simulator.roadnetwork.regulator.Regulators;
 import org.movsim.simulator.roadnetwork.routing.Routing;
+
 import org.movsim.simulator.vehicles.ExternalVehiclesController;
 import org.movsim.simulator.vehicles.TrafficCompositionGenerator;
 import org.movsim.simulator.vehicles.Vehicle;
@@ -68,11 +47,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import com.google.common.base.Preconditions;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCallback {
 
-    /** The Constant LOG. */
+    /**
+     * The Constant LOG.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(Simulator.class);
 
     private long startTimeMillis;
@@ -107,9 +93,8 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
 
     /**
      * Constructor.
-     * 
-     * @param inputData
-     * 
+     *
+     * @param inputData Data to simulate
      */
     public Simulator(Movsim inputData) {
         this.projectMetaData = ProjectMetaData.getInstance();
@@ -135,7 +120,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
                     DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm:ssZ")).toDateTime(DateTimeZone.UTC);
             timeOffsetMillis = dateTime.getMillis();
             LOG.info("global time offset set={} --> {} milliseconds.", dateTime, timeOffsetMillis);
-            ProjectMetaData.getInstance();
+            //ProjectMetaData.getInstance();  Not sure why this is here
             ProjectMetaData.getInstance().setTimeOffsetMillis(timeOffsetMillis);
         }
         projectMetaData.setXodrNetworkFilename(movsimInput.getScenario().getNetworkFilename()); // TODO
@@ -234,7 +219,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
 
     /**
      * Load scenario from xml.
-     * 
+     *
      * @param scenario
      * @param path
      * @throws JAXBException
@@ -248,7 +233,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
     }
 
     private void matchRoadSegmentsAndRoadInput(List<Road> roads,
-            MicroscopicBoundaryConditions microBoundaryConditions) {
+                                               MicroscopicBoundaryConditions microBoundaryConditions) {
         for (Road roadInput : roads) {
             LOG.info("roadInput.getId()={}", roadInput.getId());
             RoadSegment roadSegment = Preconditions.checkNotNull(roadNetwork.findByUserId(roadInput.getId()),
@@ -281,13 +266,12 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
 
     /**
      * Parse the OpenDrive (.xodr) file to load the network topology and road layout.
-     * 
-     * @param ProjectMetaData
-     *            .getInstance()
+     *
+     * @param roadNetwork
+     * @param projectMetaData .getInstance()
      * @return
-     * @throws SAXException
      * @throws JAXBException
-     * @throws ParserConfigurationException
+     * @throws SAXException
      */
     private static boolean parseOpenDriveXml(RoadNetwork roadNetwork, ProjectMetaData projectMetaData)
             throws JAXBException, SAXException {
@@ -301,12 +285,12 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
     /**
      * Add input data to road segment. Note by rules of encapsulation this function is NOT a member of RoadSegment, since
      * RoadSegment should not be aware of form of XML file or RoadInput data structure.
-     * 
+     *
      * @param roadSegment
      * @param roadInput
      */
     private void addInputToRoadSegment(RoadSegment roadSegment, Road roadInput,
-            MicroscopicBoundaryConditions microBoundaryConditions) {
+                                       MicroscopicBoundaryConditions microBoundaryConditions) {
         // setup own vehicle generator for roadSegment: needed for trafficSource and initial conditions
         TrafficCompositionGenerator composition = defaultTrafficComposition;
 
@@ -319,7 +303,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
         // set up the traffic source
         if (roadInput.isSetTrafficSource()) {
             TrafficSourceType trafficSourceData = roadInput.getTrafficSource();
-            AbstractTrafficSource trafficSource = null;
+            AbstractTrafficSource trafficSource;
             if (trafficSourceData.isSetInflow()) {
                 // macroscopic boundary conditions
                 InflowTimeSeries inflowTimeSeries = new InflowTimeSeries(trafficSourceData.getInflow());
@@ -394,7 +378,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
     }
 
     private void addVehiclesToSource(TrafficSourceMicro trafficSource, MicroscopicBoundaryInputData inputData) {
-        Map<Long, Vehicle> vehicles = inputData.createVehicles((TrafficSourceMicro) trafficSource);
+        Map<Long, Vehicle> vehicles = inputData.createVehicles(trafficSource);
         for (Entry<Long, Vehicle> veh : vehicles.entrySet()) {
             trafficSource.addVehicleToQueue(veh.getKey(), veh.getValue());
         }
@@ -466,9 +450,7 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
         int counter = 0;
         StringBuilder sb = new StringBuilder();
         for (RoadSegment roadSegment : roadNetwork) {
-            Iterator<Vehicle> iterator = roadSegment.iterator();
-            while (iterator.hasNext()) {
-                Vehicle vehicle = iterator.next();
+            for (Vehicle vehicle : roadSegment) {
                 if (vehicle.type() == Vehicle.Type.OBSTACLE) {
                     continue;
                 }

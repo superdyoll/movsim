@@ -295,7 +295,7 @@ public class TrafficCanvas extends SimulationCanvasBase
      * @throws JAXBException
      */
     public void setupTrafficScenario(String scenario, String path) {
-        reset();
+        // Try to load the new file, if this fails clear the plane anyway
         try {
             simulator.loadScenarioFromXml(scenario, path);
         } catch (JAXBException | SAXException e) {

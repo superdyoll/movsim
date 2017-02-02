@@ -19,6 +19,9 @@
                     <lane id="-2" type="driving" level="0">
                         <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
                     </lane>
+					<lane id="-3" type="driving" level="0">
+                        <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
+                    </lane>
                 </right>
             </laneSection>
         </lanes>
@@ -48,7 +51,13 @@
                         </link>
                         <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
                     </lane>
-                    <lane id="-3" type="mwyEntry" level="0">
+					<lane id="-3" type="driving" level="0">
+						<link>
+                            <successor id="-3" />
+                        </link>
+                        <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
+                    </lane>
+                    <lane id="-4" type="mwyEntry" level="0">
                         <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
                     </lane>
                 </right>
@@ -79,6 +88,12 @@
                         </link>
                         <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
                     </lane>
+					<lane id="-3" type="driving" level="0">
+                        <link>
+                            <predecessor id="-3" />
+                        </link>
+                        <width sOffset="0.0" a="10.0" b="0.0" c="0.0" d="0.0" />
+                    </lane>
                 </right>
             </laneSection>
         </lanes>
@@ -88,7 +103,7 @@
             <successor elementType="junction" elementId="15" contactPoint="start" />
         </link>
         <planView>
-            <geometry s="0.0" x="640.0" y="400.0" hdg="0.168390" length="507.173540">
+            <geometry s="0.0" x="640.0" y="185.0" hdg="0.168390" length="507.173540">
                 <line />
             </geometry>
         </planView>
@@ -106,9 +121,10 @@
         <connection id="0" incomingRoad="1" connectingRoad="2" contactPoint="start">
             <laneLink from="-1" to="-1" />
             <laneLink from="-2" to="-2" />
+			<laneLink from="-3" to="-3" />
         </connection>
         <connection id="1" incomingRoad="4" connectingRoad="2" contactPoint="start">
-            <laneLink from="-1" to="-3" />
+            <laneLink from="-1" to="-4" />
         </connection>
     </junction>
 </OpenDRIVE>

@@ -77,10 +77,12 @@ public final class ProjectMetaData {
     /**
      * private constructor: singleton pattern.
      */
-    private ProjectMetaData() {}
+    private ProjectMetaData() {
+    }
 
     /**
      * Gets the single instance of ProjectMetaData.
+     *
      * @return single instance of ProjectMetaData
      */
     public static ProjectMetaData getInstance() {
@@ -100,6 +102,7 @@ public final class ProjectMetaData {
 
     /**
      * Sets the project name.
+     *
      * @param projectName the new project name
      */
     public void setProjectName(String projectName) {
@@ -121,6 +124,7 @@ public final class ProjectMetaData {
 
     /**
      * Sets the path to project xml file.
+     *
      * @param pathToProjectXmlFile the new path to project xml file
      */
     public void setPathToProjectXmlFile(String pathToProjectXmlFile) {
@@ -140,6 +144,7 @@ public final class ProjectMetaData {
 
     /**
      * Sets the output path.
+     *
      * @param outputPath the new output path
      */
     public void setOutputPath(String outputPath) {
@@ -167,6 +172,7 @@ public final class ProjectMetaData {
 
     /**
      * Sets the instantaneous file output.
+     *
      * @param instantaneousFileOutput the new instantaneous file output
      */
     public void setInstantaneousFileOutput(boolean instantaneousFileOutput) {
@@ -179,6 +185,7 @@ public final class ProjectMetaData {
 
     /**
      * Sets the xml from resources. Xml config files are read from resources.
+     *
      * @param xmlFromResources the new xml from resources
      */
     public void setXmlFromResources(boolean xmlFromResources) {
@@ -306,7 +313,7 @@ public final class ProjectMetaData {
         Preconditions.checkArgument(!filename.isEmpty(), "filename=" + filename);
         return new File(getPathToProjectFile() + filename);
     }
-    
+
     public void setScanMode(boolean scanMode) {
         this.scanMode = scanMode;
     }
