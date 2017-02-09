@@ -1,32 +1,5 @@
 package org.movsim.viewer.ui.charts;
 
-///*
-// * Copyright (C) 2010, 2011 by Arne Kesting, Martin Treiber,
-// *                             Ralph Germ, Martin Budden
-// *                             <movsim@akesting.de>
-// * ----------------------------------------------------------------------
-// *
-// *  This file is part of
-// *
-// *  MovSim - the multi-model open-source vehicular-traffic simulator
-// *
-// *  MovSim is free software: you can redistribute it and/or modify
-// *  it under the terms of the GNU General Public License as published by
-// *  the Free Software Foundation, either version 3 of the License, or
-// *  (at your option) any later version.
-// *
-// *  MovSim is distributed in the hope that it will be useful,
-// *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-// *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// *  GNU General Public License for more details.
-// *
-// *  You should have received a copy of the GNU General Public License
-// *  along with MovSim.  If not, see <http://www.gnu.org/licenses/> or
-// *  <http://www.movsim.org>.
-// *
-// * ----------------------------------------------------------------------
-//*/
-
 import javafx.concurrent.Task;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -38,7 +11,10 @@ import org.movsim.simulator.roadnetwork.RoadNetwork;
 
 import java.awt.*;
 
-public class TravelTimeDiagram extends JFXPanel {
+/**
+ * Created by Lloyd on 09/02/2017.
+ */
+public class MeanSpeedDiagram extends JFXPanel{
 
     private final Simulator simulator;
     final LineChart<Number, Number> lineChart;
@@ -48,24 +24,25 @@ public class TravelTimeDiagram extends JFXPanel {
     int currentPoint = 1;
     boolean drawnInLastSecond = false;
 
-    public TravelTimeDiagram(Simulator simulator) {
+    public MeanSpeedDiagram(Simulator simulator) {
         this.simulator = simulator;
         //defining the axes
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Time");
-        yAxis.setLabel("TravelTime");
+        yAxis.setLabel("Mean Speed");
         //creating the chart
         lineChart = new LineChart<Number, Number>(xAxis, yAxis);
 
-        lineChart.setTitle("Travel Time Diagram");
+        lineChart.setTitle("Mean Speed Diagram");
         //defining a series
         series = new XYChart.Series();
-        series.setName("Travel Time");
+        series.setName("Mean Speed");
         thread = new Thread(updateTask());
 
         Scene scene = new Scene(lineChart, 800,800);
         lineChart.getData().add(series);
+        lineChart.setCreateSymbols(false);
 
         this.setScene(scene);
     }
@@ -76,8 +53,8 @@ public class TravelTimeDiagram extends JFXPanel {
         if(!drawnInLastSecond) {
             drawnInLastSecond = true;
             RoadNetwork roadNetwork = simulator.getRoadNetwork();
-            double travelTime =  roadNetwork.totalVehicleTravelTime() / (roadNetwork.vehicleCount() + roadNetwork.totalVehiclesRemoved());
-            series.getData().add(new XYChart.Data<>(currentPoint, travelTime));
+            double meanSpeed =  roadNetwork.vehiclesMeanSpeed();
+            series.getData().add(new XYChart.Data<>(currentPoint, meanSpeed));
             //System.out.println(travelTime);
             currentPoint++;
         }

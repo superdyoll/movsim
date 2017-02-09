@@ -20,7 +20,7 @@ public class AppletMenu extends MovSimMenuBase {
 
     public AppletMenu(CanvasPanel canvasPanel, TrafficCanvas trafficCanvas, StatusPanel statusPanel,
             ResourceBundle resourceBundle) {
-        super(canvasPanel, trafficCanvas, resourceBundle);
+        super(canvasPanel, trafficCanvas, resourceBundle, statusPanel.getSimulator());
         this.statusPanel = statusPanel;
     }
 

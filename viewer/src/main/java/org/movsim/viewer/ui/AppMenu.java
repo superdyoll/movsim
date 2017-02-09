@@ -26,21 +26,6 @@
 
 package org.movsim.viewer.ui;
 
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.util.EventObject;
-import java.util.Properties;
-import java.util.ResourceBundle;
-
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.filechooser.FileFilter;
-import javax.xml.bind.JAXBException;
-
 import org.movsim.simulator.Simulator;
 import org.movsim.simulator.vehicles.longitudinalmodel.acceleration.CCS;
 import org.movsim.simulator.vehicles.longitudinalmodel.acceleration.CCS.Waves;
@@ -48,6 +33,15 @@ import org.movsim.utilities.FileUtils;
 import org.movsim.viewer.graphics.TrafficCanvas;
 import org.movsim.viewer.util.SwingHelper;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.xml.bind.JAXBException;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.EventObject;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 @SuppressWarnings({"synthetic-access", "serial"})
 public class AppMenu extends MovSimMenuBase {
@@ -73,7 +67,7 @@ public class AppMenu extends MovSimMenuBase {
 
     public AppMenu(AppFrame mainFrame, Simulator simulator, CanvasPanel canvasPanel,
                    TrafficCanvas trafficCanvas, ResourceBundle resourceBundle, Properties properties) {
-        super(canvasPanel, trafficCanvas, resourceBundle);
+        super(canvasPanel, trafficCanvas, resourceBundle, simulator);
         this.frame = mainFrame;
         this.simulator = simulator;
         this.properties = properties;
@@ -124,7 +118,7 @@ public class AppMenu extends MovSimMenuBase {
             public void actionPerformed(ActionEvent actionEvent) {
                 handleTravelTimeDiagram(actionEvent);
             }
-        })).setEnabled(false);
+        })).setEnabled(true);
         outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("Detectors")) {//$NON-NLS-1$
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -149,6 +143,12 @@ public class AppMenu extends MovSimMenuBase {
                 handleFuelConsumptionDiagram(actionEvent);
             }
         })).setEnabled(false);
+        outputMenu.add(new JCheckBoxMenuItem(new AbstractAction(resourceString("MeanSpeed")) {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleMeanSpeedDiagram(actionEvent);
+            }
+        })).setEnabled(true);
 
         return outputMenu;
     }

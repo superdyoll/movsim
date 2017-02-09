@@ -266,6 +266,10 @@ public class StatusPanel extends JPanel implements SimulationRunnable.UpdateStat
         }
     }
 
+    public Simulator getSimulator(){
+        return simulator;
+    }
+
     public void reset() {
         removeAll();
         repaint();

@@ -43,6 +43,7 @@ public class LocalizationStrings extends ListResourceBundle {
                     {"FloatingCars", "Floating Cars"},
                     {"SpatioTemporal", "Spatio Temporal Diagram"},
                     {"Consumption", "Fuel Consumption"},
+                    {"MeanSpeed", "Mean Speed"},
 
                     // View Menu
                     {"ViewMenu", "View"},

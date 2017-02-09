@@ -26,19 +26,19 @@
 
 package org.movsim.viewer.ui;
 
+import org.movsim.simulator.Simulator;
+import org.movsim.viewer.graphics.TrafficCanvas;
+import org.movsim.viewer.ui.charts.MeanSpeedDiagram;
+import org.movsim.viewer.ui.charts.TravelTimeDiagram;
+import org.movsim.viewer.util.SwingHelper;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowEvent;
 import java.util.EventObject;
 import java.util.ResourceBundle;
 
-import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import org.movsim.viewer.graphics.TrafficCanvas;
-import org.movsim.viewer.util.SwingHelper;
+//import org.movsim.viewer.ui.charts.TravelTimeDiagram;
 
 @SuppressWarnings("serial")
 public class MovSimMenuBase extends JPanel {
@@ -46,12 +46,15 @@ public class MovSimMenuBase extends JPanel {
     final CanvasPanel canvasPanel;
     final TrafficCanvas trafficCanvas;
     final ResourceBundle resourceBundle;
+    private final Simulator simulator;
     private LogWindow logWindow;
+    private JFrame frame = null;
 
-    public MovSimMenuBase(CanvasPanel canvasPanel, TrafficCanvas trafficCanvas, ResourceBundle resourceBundle) {
+    public MovSimMenuBase(CanvasPanel canvasPanel, TrafficCanvas trafficCanvas, ResourceBundle resourceBundle, Simulator simulator) {
         this.canvasPanel = canvasPanel;
         this.trafficCanvas = trafficCanvas;
         this.resourceBundle = resourceBundle;
+        this.simulator = simulator;
     }
 
     final String resourceString(String string) {
@@ -62,18 +65,18 @@ public class MovSimMenuBase extends JPanel {
         final JMenu helpMenu = new JMenu(resourceBundle.getString("HelpMenu")); //$NON-NLS-1$
 
         helpMenu.add(new JMenuItem(new AbstractAction(resourceBundle.getString("HelpMenuAbout")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleAbout(actionEvent);
-                    }
-                }));
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleAbout(actionEvent);
+            }
+        }));
 
         helpMenu.add(new JMenuItem(new AbstractAction(resourceBundle.getString("HelpMenuDocumentation")) {//$NON-NLS-1$
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        handleAbout(actionEvent);
-                    }
-                })).setEnabled(false);
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                handleAbout(actionEvent);
+            }
+        })).setEnabled(false);
 
         final JMenu languageMenu = new JMenu(resourceBundle.getString("LanguageChooser"));
         languageMenu.add(new JMenuItem(new AbstractAction(resourceBundle.getString("English")) {
@@ -100,17 +103,32 @@ public class MovSimMenuBase extends JPanel {
     }
 
     void handleTravelTimeDiagram(ActionEvent actionEvent) {
-        // final JCheckBoxMenuItem cb = (JCheckBoxMenuItem) actionEvent.getSource();
-        // if (trafficUi.getStatusPanel().isWithTravelTimes()) {
-        // if (cb.isSelected()) {
-        // travelTimeDiagram = new TravelTimeDiagram(resourceBundle, cb);
-        // } else {
-        // SwingHelper.closeWindow(travelTimeDiagram);
-        // }
-        // } else {
-        // JOptionPane.showMessageDialog(frame, resourceBundle.getString("NoTravelTime"));
-        // cb.setSelected(false);
-        // }
+//        final JCheckBoxMenuItem cb = (JCheckBoxMenuItem) actionEvent.getSource();
+//        if (trafficUi.getStatusPanel().isWithTravelTimes()) {
+//            if (cb.isSelected()) {
+//                travelTimeDiagram = new TravelTimeDiagram(resourceBundle, cb);
+//            } else {
+//                SwingHelper.closeWindow(travelTimeDiagram);
+//            }
+//        } else {
+//            JOptionPane.showMessageDialog(frame, resourceBundle.getString("NoTravelTime"));
+//            cb.setSelected(false);
+//        }
+        final JCheckBoxMenuItem cb = (JCheckBoxMenuItem) actionEvent.getSource();
+        if (cb.isSelected()) {
+            TravelTimeDiagram diagram = new TravelTimeDiagram(simulator);
+
+            frame = new JFrame("Travel Time Diagram");
+            frame.getContentPane().add(diagram);
+            frame.setSize(800, 800);
+            frame.setVisible(true);
+
+            diagram.start();
+        }else{
+            if (frame != null) {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        }
     }
 
     void handleSpatioTemporalDiagram(ActionEvent actionEvent) {
@@ -146,6 +164,24 @@ public class MovSimMenuBase extends JPanel {
 
     void handleFuelConsumptionDiagram(ActionEvent actionEvent) {
         SwingHelper.notImplemented(canvasPanel);
+    }
+
+    void handleMeanSpeedDiagram(ActionEvent actionEvent) {
+        final JCheckBoxMenuItem cb = (JCheckBoxMenuItem) actionEvent.getSource();
+        if (cb.isSelected()) {
+            MeanSpeedDiagram diagram = new MeanSpeedDiagram(simulator);
+
+            frame = new JFrame("Mean Speed Diagram");
+            frame.getContentPane().add(diagram);
+            frame.setSize(800, 800);
+            frame.setVisible(true);
+
+            diagram.start();
+        }else{
+            if (frame != null) {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        }
     }
 
     protected void handleLogOutput(ActionEvent actionEvent) {
