@@ -39,6 +39,11 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import javafx.concurrent.Task;
+import org.movsim.autogen.ModelParameterACC;
+import org.movsim.autogen.ModelParameterMOBIL;
+import org.movsim.autogen.Movsim;
+import org.movsim.autogen.VehiclePrototypeConfiguration;
 import org.movsim.input.MovsimCommandLine;
 import org.movsim.input.ProjectMetaData;
 import org.movsim.logging.Logger;
@@ -46,8 +51,12 @@ import org.movsim.viewer.ui.AppFrame;
 import org.movsim.viewer.ui.LogWindow;
 import org.movsim.viewer.ui.ViewProperties;
 import org.movsim.viewer.util.LocalizationStrings;
+import org.slf4j.LoggerFactory;
 
 public class App {
+
+
+    private static org.slf4j.Logger LOG;
 
     /**
      * @param args
@@ -66,6 +75,8 @@ public class App {
         final ProjectMetaData projectMetaData = ProjectMetaData.getInstance();
 
         Logger.initializeLogger();
+        LOG = LoggerFactory.getLogger(App.class);
+        LOG.debug("TESTING TESTING");
 
         // parse the command line, putting the results into projectMetaData
         MovsimCommandLine.parse(args);
@@ -85,13 +96,15 @@ public class App {
         System.out.println("project = " + projectMetaData.getProjectName());
 
         AppFrame appFrame = new AppFrame(resourceBundle, projectMetaData, properties);
+
+        FindBestCar findBestCar = new FindBestCar(appFrame);
     }
 
     /**
      * List directory contents for a resource folder. Not recursive.
      * This is basically a brute-force implementation.
      * Works for regular files and also JARs.
-     * 
+     *
      * @author Greg Briggs
      * @param clazz
      *            Any java class that lives in the same place as the resources you want.

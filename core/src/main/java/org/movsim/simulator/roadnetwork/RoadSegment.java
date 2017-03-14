@@ -1371,4 +1371,22 @@ public class RoadSegment extends DefaultWeightedEdge implements Iterable<Vehicle
         this.freeFlowSpeed = freeFlowSpeed;
     }
 
+    public double getAverageSpeed() {
+        double totalSpeed = 0;
+        for (LaneSegment laneSegment: laneSegments) {
+            totalSpeed += laneSegment.getAverageSpeed();
+        }
+        return totalSpeed/laneSegments.length;
+    }
+
+    public double getSlowestSpeed() {
+        double lowestSpeed = Double.MAX_VALUE;
+        for (LaneSegment laneSegment: laneSegments) {
+            double laneSpeed = laneSegment.getSlowestSpeed();
+            if (laneSpeed < lowestSpeed)
+                lowestSpeed = laneSpeed;
+        }
+        return lowestSpeed;
+    }
+
 }

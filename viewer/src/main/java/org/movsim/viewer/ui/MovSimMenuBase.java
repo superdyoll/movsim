@@ -29,6 +29,7 @@ package org.movsim.viewer.ui;
 import org.movsim.simulator.Simulator;
 import org.movsim.viewer.graphics.TrafficCanvas;
 import org.movsim.viewer.ui.charts.MeanSpeedDiagram;
+import org.movsim.viewer.ui.charts.SpatioTemporalView;
 import org.movsim.viewer.ui.charts.TravelTimeDiagram;
 import org.movsim.viewer.util.SwingHelper;
 
@@ -138,6 +139,21 @@ public class MovSimMenuBase extends JPanel {
         // } else {
         // SwingHelper.closeWindow(spatioTemporalDiagram);
         // }
+        final JCheckBoxMenuItem cb = (JCheckBoxMenuItem) actionEvent.getSource();
+        if (cb.isSelected()) {
+            SpatioTemporalView diagram = new SpatioTemporalView(simulator);
+
+            frame = new JFrame("Spatio Temporal Diagram");
+            frame.getContentPane().add(diagram);
+            frame.setSize(800, 800);
+            frame.setVisible(true);
+
+            diagram.start();
+        }else{
+            if (frame != null) {
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+            }
+        }
     }
 
     void handleFloatingCarsDiagram(ActionEvent actionEvent) {

@@ -26,16 +26,16 @@
 
 package org.movsim.simulator.roadnetwork;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-
+import com.google.common.base.Preconditions;
 import org.movsim.simulator.roadnetwork.boundaries.TrafficSink;
 import org.movsim.simulator.vehicles.Vehicle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 
 /**
  * <p>
@@ -75,10 +75,9 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param roadSegment
-     * @param lane
-     *            (not the laneIndex)
+     * @param lane        (not the laneIndex)
      */
     LaneSegment(RoadSegment roadSegment, int lane) {
         this.roadSegment = Preconditions.checkNotNull(roadSegment);
@@ -94,7 +93,7 @@ public class LaneSegment implements Iterable<Vehicle> {
      * <p>
      * The lane is an identifier of the lane in the physical network starting with a value of 1 for the most inner lane.
      * </p>
-     * 
+     *
      * @return lane, not the index of the lane in the roadSegment
      */
     public final int lane() {
@@ -103,7 +102,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Sets the type of the lane.
-     * 
+     *
      * @param type
      */
     public final void setType(Lanes.Type type) {
@@ -115,7 +114,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the type of the lane.
-     * 
+     *
      * @return type of lane
      */
     public final Lanes.Type type() {
@@ -124,7 +123,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the road segment for the lane.
-     * 
+     *
      * @return road segment
      */
     public final RoadSegment roadSegment() {
@@ -133,7 +132,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the length of the lane.
-     * 
+     *
      * @return length of lane
      */
     public final double roadLength() {
@@ -173,7 +172,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the number of vehicles on this lane segment.
-     * 
+     *
      * @return the number of vehicles on this lane segment
      */
     public final int vehicleCount() {
@@ -197,7 +196,9 @@ public class LaneSegment implements Iterable<Vehicle> {
         return stoppedVehicleCount;
     }
 
-    /** Returns the number of real vehicles (without 'obstacles') n this lane segment. */
+    /**
+     * Returns the number of real vehicles (without 'obstacles') n this lane segment.
+     */
     // TODO think about iterating only over vehicles but not obstacles which are used only internally
     public final int vehicleCountWithoutObstacles() {
         return vehicles.size() - obstacleCount();
@@ -205,7 +206,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the number of obstacles on this lane segment.
-     * 
+     *
      * @return the number of obstacles on this lane segment
      */
     public final int obstacleCount() {
@@ -220,7 +221,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the total travel time of all vehicles on this lane segment.
-     * 
+     *
      * @return the total vehicle travel time
      */
     public double totalVehicleTravelTime() {
@@ -233,7 +234,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the total travel distance of all vehicles on this lane segment.
-     * 
+     *
      * @return the total vehicle travel distance
      */
     public double totalVehicleTravelDistance() {
@@ -246,7 +247,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the total fuel used by all vehicles on this lane segment.
-     * 
+     *
      * @return the total vehicle fuel used
      */
     public double totalVehicleFuelUsedLiters() {
@@ -269,10 +270,8 @@ public class LaneSegment implements Iterable<Vehicle> {
      * <p>
      * Returns the vehicle at the given index.
      * </p>
-     * 
-     * 
+     *
      * @param index
-     * 
      * @return vehicle at given index
      */
     public Vehicle getVehicle(int index) {
@@ -281,9 +280,8 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Removes the vehicle at the given index.
-     * 
-     * @param index
-     *            index of vehicle to remove
+     *
+     * @param index index of vehicle to remove
      */
     public void removeVehicle(int index) {
         vehicles.remove(index);
@@ -291,7 +289,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Removes the given vehicle.
-     * 
+     *
      * @param vehicleToRemove
      */
     public void removeVehicle(Vehicle vehicleToRemove) {
@@ -318,7 +316,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Removes any vehicles that have moved past the end of this road segment.
-     * 
+     *
      * @return the number of vehicles removed
      */
     public int removeVehiclesPastEnd(TrafficSink sink) {
@@ -355,7 +353,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Adds a vehicle to this lane segment.
-     * 
+     *
      * @param vehicle
      */
     public void addVehicle(Vehicle vehicle) {
@@ -420,7 +418,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the rear vehicle.
-     * 
+     *
      * @return the rear vehicle
      */
     public Vehicle rearVehicle() {
@@ -433,9 +431,8 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Finds the vehicle immediately at or behind the given position.
-     * 
+     *
      * @param vehiclePos
-     * 
      * @return reference to the rear vehicle
      */
     // TODO this critical method deserves a unit test!
@@ -522,7 +519,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the front vehicle which is the most downstream vehicle in the {@link LaneSegment}.
-     * 
+     *
      * @return the front vehicle
      */
     public Vehicle frontVehicle() {
@@ -535,9 +532,8 @@ public class LaneSegment implements Iterable<Vehicle> {
     /**
      * Finds the vehicle immediately in front of the given position. That is a vehicle such that vehicle.position() strictly greater than
      * vehicePos. The vehicle whose position equals vehiclePos is deemed to be in the rear.
-     * 
+     *
      * @param vehiclePos
-     * 
      * @return reference to the front vehicle
      */
     // TODO this critical method deserves a unit test!
@@ -579,7 +575,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns the vehicle in front of the given vehicle.
-     * 
+     *
      * @param vehicle
      * @return the next downstream vehicle
      */
@@ -668,9 +664,8 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * If there is a traffic sink, use it to perform any traffic outflow.
-     * 
-     * @param dt
-     *            simulation time interval
+     *
+     * @param dt             simulation time interval
      * @param simulationTime
      * @param iterationCount
      */
@@ -728,7 +723,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns true if the vehicle array is sorted.
-     * 
+     *
      * @return true if the vehicle array is sorted
      */
     public boolean laneIsSorted() {
@@ -771,7 +766,7 @@ public class LaneSegment implements Iterable<Vehicle> {
 
     /**
      * Returns an iterator over all the vehicles in this lane segment.
-     * 
+     *
      * @return an iterator over all the vehicles in this lane segment
      */
     @Override
@@ -804,4 +799,25 @@ public class LaneSegment implements Iterable<Vehicle> {
                 + ", lane=" + lane + ", type=" + type + ", removedVehicleCount=" + removedVehicleCount + "]";
     }
 
+    public double getAverageSpeed() {
+        double totalSpeed = 0;
+        for (final Vehicle vehicle : vehicles) {
+            totalSpeed += vehicle.getSpeed();
+        }
+        return totalSpeed / vehicles.size();
+    }
+
+    public double getSlowestSpeed() {
+        double lowestSpeed = Double.MAX_VALUE;
+        try {
+            for (Vehicle vehicle : vehicles){
+                double vehicleSpeed = vehicle.getSpeed();
+                if (vehicleSpeed < lowestSpeed)
+                    lowestSpeed = vehicleSpeed;
+            }
+        } catch (ConcurrentModificationException | NullPointerException e) {
+            System.out.println("Error caught");
+        }
+        return lowestSpeed;
+    }
 }

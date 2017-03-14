@@ -1,0 +1,12 @@
+.default-color0.chart-symbol { /* fast */
+     -fx-background-color: #ffffb2;
+     -fx-padding: 5px;
+}
+.default-color1.chart-symbol { /* slow */
+    -fx-background-color: #ffaf59;
+    -fx-padding: 5px;
+}
+.default-color2.chart-symbol { /* really slow */
+    -fx-background-color: #ff3226;
+    -fx-padding: 5px;
+}

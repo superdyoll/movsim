@@ -47,6 +47,8 @@ import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.movsim.autogen.Movsim;
+import org.movsim.input.ProjectMetaData;
 import org.movsim.roadmappings.PosTheta;
 import org.movsim.roadmappings.RoadMapping;
 import org.movsim.simulator.MovsimConstants;
@@ -68,6 +70,7 @@ import org.movsim.utilities.Units;
 import org.movsim.viewer.roadmapping.PaintRoadMapping;
 import org.movsim.viewer.ui.ViewProperties;
 import org.movsim.viewer.util.SwingHelper;
+import org.movsim.xml.InputLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -101,6 +104,8 @@ public class TrafficCanvas extends SimulationCanvasBase
     private static final long serialVersionUID = 7637533802145001440L;
 
     private static final Logger LOG = LoggerFactory.getLogger(TrafficCanvas.class);
+
+    private final ProjectMetaData projectMetaData;
 
     protected final Simulator simulator;
     protected final RoadNetwork roadNetwork;
@@ -197,6 +202,7 @@ public class TrafficCanvas extends SimulationCanvasBase
         this.simulator = simulator;
         this.roadNetwork = simulator.getRoadNetwork();
         this.properties = properties;
+        this.projectMetaData = ProjectMetaData.getInstance();
 
         initGraphicConfigFieldsFromProperties();
 
@@ -264,7 +270,10 @@ public class TrafficCanvas extends SimulationCanvasBase
     @Override
     public void reset() {
         super.reset();
+        simulationRunnable.stop();
         try {
+            Movsim movsimInput = InputLoader.unmarshallMovsim(projectMetaData.getInputFile());
+            simulator.setMovsimInput(movsimInput);
             simulator.initialize();
         } catch (JAXBException | SAXException e) {
             throw new RuntimeException("Jaxb exception:" + e.toString());

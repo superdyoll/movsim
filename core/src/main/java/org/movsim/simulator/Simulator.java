@@ -112,7 +112,8 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
         LOG.info("Copyright '\u00A9' by Arne Kesting, Martin Treiber, Ralph Germ and Martin Budden (2011-2013)");
 
         projectName = projectMetaData.getProjectName();
-        movsimInput = InputLoader.unmarshallMovsim(projectMetaData.getInputFile());
+        //FIXME: Remove line so that file is not unmarshalled twice
+        //movsimInput = InputLoader.unmarshallMovsim(projectMetaData.getInputFile());
 
         timeOffsetMillis = 0;
         if (movsimInput.getScenario().getSimulation().isSetTimeOffset()) {
@@ -226,10 +227,14 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
      * @throws SAXException
      */
     public void loadScenarioFromXml(String scenario, String path) throws JAXBException, SAXException {
+        simulationRunnable.stop();
         roadNetwork.clear();
         ProjectMetaData.getInstance().setProjectName(scenario);
         ProjectMetaData.getInstance().setPathToProjectXmlFile(path);
+        Movsim movsimInput = InputLoader.unmarshallMovsim(projectMetaData.getInputFile());
+        setMovsimInput(movsimInput);
         initialize();
+        reset();
     }
 
     private void matchRoadSegmentsAndRoadInput(List<Road> roads,
@@ -483,5 +488,16 @@ public class Simulator implements SimulationTimeStep, SimulationRun.CompletionCa
 
     public Regulators getRegulators() {
         return regulators;
+    }
+
+    public Movsim getMovsimInput() {
+        return movsimInput;
+    }
+
+    public void setMovsimInput(Movsim movsimInput) {
+        this.movsimInput = Preconditions.checkNotNull(movsimInput);
+        if (this.movsimInput.isSetRoadTypeSpeedMappings()) {
+            RoadTypeSpeeds.INSTANCE.init(movsimInput.getRoadTypeSpeedMappings());
+        }
     }
 }

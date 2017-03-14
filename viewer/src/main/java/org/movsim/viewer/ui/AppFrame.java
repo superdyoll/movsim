@@ -38,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.xml.bind.JAXBException;
 
 import org.movsim.autogen.Movsim;
 import org.movsim.input.ProjectMetaData;
@@ -46,14 +47,18 @@ import org.movsim.viewer.App;
 import org.movsim.viewer.graphics.TrafficCanvas;
 import org.movsim.viewer.util.SwingHelper;
 import org.movsim.xml.InputLoader;
+import org.xml.sax.SAXException;
 
 @SuppressWarnings("synthetic-access")
 public class AppFrame extends JFrame {
     private static final long serialVersionUID = 1L;
 
     private final CanvasPanel canvasPanel;
+    private final TrafficCanvas trafficCanvas;
     final StatusPanel statusPanel;
     private MovSimToolBar toolBar;
+
+    final Simulator simulator;
 
     public AppFrame(ResourceBundle resourceBundle, ProjectMetaData projectMetaData, Properties properties) {
         super(resourceBundle.getString("FrameName"));
@@ -61,10 +66,10 @@ public class AppFrame extends JFrame {
         SwingHelper.activateWindowClosingAndSystemExitButton(this);
 
         Movsim movsimInput = InputLoader.unmarshallMovsim(projectMetaData.getInputFile());
-        final Simulator simulator = new Simulator(movsimInput);
+        simulator = new Simulator(movsimInput);
         initLookAndFeel();
 
-        final TrafficCanvas trafficCanvas = new TrafficCanvas(simulator, properties);
+        trafficCanvas = new TrafficCanvas(simulator, properties);
         canvasPanel = new CanvasPanel(resourceBundle, trafficCanvas);
         statusPanel = new StatusPanel(resourceBundle, simulator);
         toolBar = new MovSimToolBar(statusPanel, trafficCanvas, resourceBundle);
@@ -137,5 +142,22 @@ public class AppFrame extends JFrame {
             e.printStackTrace();
         }
         SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void changeSimulation (Movsim movsim) throws JAXBException, SAXException {
+        simulator.setMovsimInput(movsim);
+        simulator.initialize();
+    }
+
+    public Movsim getMovsimInput (){
+        return simulator.getMovsimInput();
+    }
+
+    public Simulator getSimulator(){
+        return simulator;
+    }
+
+    public TrafficCanvas getTrafficCanvas() {
+        return trafficCanvas;
     }
 }

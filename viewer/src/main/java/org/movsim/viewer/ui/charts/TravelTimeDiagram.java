@@ -47,6 +47,9 @@ public class TravelTimeDiagram extends JFXPanel {
     boolean threadRunning = true;
     int currentPoint = 1;
     boolean drawnInLastSecond = false;
+    double previousTravelTime = 0;
+    double travelTime = 0;
+    double currentTime = 0;
 
     public TravelTimeDiagram(Simulator simulator) {
         this.simulator = simulator;
@@ -75,9 +78,7 @@ public class TravelTimeDiagram extends JFXPanel {
         super.paint(g);
         if(!drawnInLastSecond) {
             drawnInLastSecond = true;
-            RoadNetwork roadNetwork = simulator.getRoadNetwork();
-            double travelTime =  roadNetwork.totalVehicleTravelTime() / (roadNetwork.vehicleCount() + roadNetwork.totalVehiclesRemoved());
-            series.getData().add(new XYChart.Data<>(currentPoint, travelTime));
+            series.getData().add(new XYChart.Data<>(currentPoint, currentTime));
             //System.out.println(travelTime);
             currentPoint++;
         }
@@ -90,6 +91,10 @@ public class TravelTimeDiagram extends JFXPanel {
                 int currentPoint = 1;
                 while (threadRunning) {
                     drawnInLastSecond = false;
+                    RoadNetwork roadNetwork = simulator.getRoadNetwork();
+                    travelTime =  roadNetwork.totalVehicleTravelTime() / roadNetwork.vehicleCount();
+                    currentTime = travelTime - previousTravelTime;
+                    previousTravelTime = travelTime;
                     repaint();
                     Thread.sleep(1000);
                 }
