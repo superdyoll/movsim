@@ -97,7 +97,8 @@ public class App {
 
         AppFrame appFrame = new AppFrame(resourceBundle, projectMetaData, properties);
 
-        FindBestCar findBestCar = new FindBestCar(appFrame);
+        //TimingRunnable timingRunnable = new AdjustNumberOfCars(appFrame);
+        TimingRunnable timingRunnable = new AdjustNumberOfCars(appFrame);
     }
 
     /**
