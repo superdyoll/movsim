@@ -3,6 +3,9 @@
 .idea/
 /out/
 
+# ignore results
+*.xlsx
+
 # ignore Eclipse stuff
 .project
 .settings

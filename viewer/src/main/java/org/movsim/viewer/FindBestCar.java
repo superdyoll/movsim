@@ -48,7 +48,7 @@ public class FindBestCar extends TimingRunnable {
         }
         FileWriter writer = null;
         try {
-            writer = new FileWriter("test11.csv");
+            writer = new FileWriter("test12.csv");
             writer.append("T,s0,s1,delta,a,b,coolness (max 1),safe_deceleration,minimum_gap,threshold_acceleration,right_bias_acceleration,politeness,Time till first stopped car,Time till traffic slows before on ramp\n");
 
             int max_times = 50;
@@ -212,5 +212,10 @@ public class FindBestCar extends TimingRunnable {
     @Override
     public void printValues(Simulator simulator) {
 
+    }
+
+    @Override
+    public boolean whileLoopBoolean(int cumulativeTime, boolean carStopped, boolean trafficSlowed, boolean crashed) {
+        return cumulativeTime < MAX_TIME_TO_RUN && (carStopped == false || trafficSlowed == false) && crashed == false;
     }
 }

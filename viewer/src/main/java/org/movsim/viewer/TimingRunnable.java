@@ -65,7 +65,7 @@ public abstract class TimingRunnable implements Runnable {
                 System.out.println("Another error caught");
             }
 
-        } while (cumulativeTime < MAX_TIME_TO_RUN && (carStopped == false || trafficSlowed == false) && crashed == false);
+        } while (whileLoopBoolean(cumulativeTime,carStopped,trafficSlowed,crashed));
         if (carStopped == false) {
             timings.get(index).setCarStopped(cumulativeTime);
         }
@@ -78,6 +78,8 @@ public abstract class TimingRunnable implements Runnable {
     }
 
     public abstract void printValues(Simulator simulator);
+
+    public abstract boolean whileLoopBoolean(int cumulativeTime, boolean carStopped, boolean trafficSlowed, boolean crashed);
 
     protected class CarTimings {
         private int carStopped = 0;
